@@ -73,6 +73,22 @@ jobs:
           username: ${{ secrets.FSI_DOCKERHUB_USERNAME }}
           password: ${{ secrets.FSI_DOCKERHUB_TOKEN }}
 
+      - name: Build and load x86_64 image for vuln scanning
+        # Builds targeting more than one --platform cannot be `--load`ed into the host, only `--push`ed directly
+        # Because of this, we build and load for a single platform here, to be tested by trivy
+        run: |
+          docker buildx build --load --platform=linux/amd64 \
+            -t $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG \
+            .
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.0.14
+        with:
+          image-ref: 'docker.io/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+
       - name: Build docker images
         run: |
           docker buildx build --platform=$DOCKER_PLATFORMS \
