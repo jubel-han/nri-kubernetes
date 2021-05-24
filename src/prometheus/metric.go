@@ -48,6 +48,21 @@ func (l Labels) Has(name string) bool {
 	return false
 }
 
+// Rename renames the specified label from "source" to be "target"
+func (l Labels) Rename(source string, target string) Labels {
+	var newKey string
+	newLabels := make(Labels)
+
+	for key, value := range l {
+		newKey = key
+		if key == source {
+			newKey = target
+		}
+		newLabels[newKey] = value
+	}
+	return newLabels
+}
+
 // Metric is for all "single value" metrics, i.e. Counter, Gauge, and Untyped.
 type Metric struct {
 	Labels Labels

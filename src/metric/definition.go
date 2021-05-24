@@ -686,24 +686,24 @@ var KSMSpecs = definition.SpecGroups{
 		},
 	},
 	"hpa": {
-		IDGenerator:   prometheus.FromLabelValueEntityIDGenerator("kube_hpa_labels", "hpa"),
-		TypeGenerator: prometheus.FromLabelValueEntityTypeGenerator("kube_hpa_labels"),
+		IDGenerator:   prometheus.FromLabelValueEntityIDGenerator("kube_horizontalpodautoscaler_labels", "hpa"),
+		TypeGenerator: prometheus.FromLabelValueEntityTypeGenerator("kube_horizontalpodautoscaler_labels"),
 		Specs: []definition.Spec{
 			// Kubernetes labels converted to Prometheus labels. not sure if interesting to get
-			{Name: "labels", ValueFunc: prometheus.FromValue("kube_hpa_labels"), Type: sdkMetric.GAUGE},
+			{Name: "labels", ValueFunc: prometheus.FromValue("kube_horizontalpodautoscaler_labels"), Type: sdkMetric.GAUGE},
 			// The generation observed by the HorizontalPodAutoscaler controller. not sure if interesting to get
-			{Name: "metadataGeneration", ValueFunc: prometheus.FromValue("kube_hpa_metadata_generation"), Type: sdkMetric.GAUGE},
-			{Name: "maxReplicas", ValueFunc: prometheus.FromValue("kube_hpa_spec_max_replicas"), Type: sdkMetric.GAUGE},
-			{Name: "minReplicas", ValueFunc: prometheus.FromValue("kube_hpa_spec_min_replicas"), Type: sdkMetric.GAUGE},
+			{Name: "metadataGeneration", ValueFunc: prometheus.FromValue("kube_horizontalpodautoscaler_metadata_generation"), Type: sdkMetric.GAUGE},
+			{Name: "maxReplicas", ValueFunc: prometheus.FromValue("kube_horizontalpodautoscaler_spec_max_replicas"), Type: sdkMetric.GAUGE},
+			{Name: "minReplicas", ValueFunc: prometheus.FromValue("kube_horizontalpodautoscaler_spec_min_replicas"), Type: sdkMetric.GAUGE},
 			//TODO this metric has a couple of dimensions (metric_name, target_type) that might be useful to add
-			{Name: "targetMetric", ValueFunc: prometheus.FromValue("kube_hpa_spec_target_metric"), Type: sdkMetric.GAUGE},
-			{Name: "currentReplicas", ValueFunc: prometheus.FromValue("kube_hpa_status_current_replicas"), Type: sdkMetric.GAUGE},
-			{Name: "desiredReplicas", ValueFunc: prometheus.FromValue("kube_hpa_status_desired_replicas"), Type: sdkMetric.GAUGE},
-			{Name: "namespaceName", ValueFunc: prometheus.FromLabelValue("kube_hpa_status_condition", "namespace"), Type: sdkMetric.ATTRIBUTE},
-			{Name: "label.*", ValueFunc: prometheus.InheritAllLabelsFrom("hpa", "kube_hpa_labels"), Type: sdkMetric.ATTRIBUTE},
-			{Name: "isActive", ValueFunc: prometheus.FromValue("kube_hpa_status_condition_active")},
-			{Name: "isAble", ValueFunc: prometheus.FromValue("kube_hpa_status_condition_able")},
-			{Name: "isLimited", ValueFunc: prometheus.FromValue("kube_hpa_status_condition_limited")},
+			{Name: "targetMetric", ValueFunc: prometheus.FromValue("kube_horizontalpodautoscaler_spec_target_metric"), Type: sdkMetric.GAUGE},
+			{Name: "currentReplicas", ValueFunc: prometheus.FromValue("kube_horizontalpodautoscaler_status_current_replicas"), Type: sdkMetric.GAUGE},
+			{Name: "desiredReplicas", ValueFunc: prometheus.FromValue("kube_horizontalpodautoscaler_status_desired_replicas"), Type: sdkMetric.GAUGE},
+			{Name: "namespaceName", ValueFunc: prometheus.FromLabelValue("kube_horizontalpodautoscaler_labels", "namespace"), Type: sdkMetric.ATTRIBUTE},
+			{Name: "label.*", ValueFunc: prometheus.InheritAllLabelsFrom("hpa", "kube_horizontalpodautoscaler_labels"), Type: sdkMetric.ATTRIBUTE},
+			{Name: "isActive", ValueFunc: prometheus.FromValue("kube_horizontalpodautoscaler_status_condition_active")},
+			{Name: "isAble", ValueFunc: prometheus.FromValue("kube_horizontalpodautoscaler_status_condition_able")},
+			{Name: "isLimited", ValueFunc: prometheus.FromValue("kube_horizontalpodautoscaler_status_condition_limited")},
 		},
 	},
 }
@@ -785,28 +785,28 @@ var KSMQueries = []prometheus.Query{
 	{MetricName: "kube_endpoint_address_not_ready"},
 	{MetricName: "kube_endpoint_address_available"},
 	//hpa
-	{MetricName: "kube_hpa_labels"},
-	{MetricName: "kube_hpa_metadata_generation"},
-	{MetricName: "kube_hpa_spec_max_replicas"},
-	{MetricName: "kube_hpa_spec_min_replicas"},
-	{MetricName: "kube_hpa_spec_target_metric"},
-	{MetricName: "kube_hpa_status_condition", CustomName: "kube_hpa_status_condition_active",
+	{MetricName: "kube_horizontalpodautoscaler_labels"},
+	{MetricName: "kube_horizontalpodautoscaler_metadata_generation"},
+	{MetricName: "kube_horizontalpodautoscaler_spec_max_replicas"},
+	{MetricName: "kube_horizontalpodautoscaler_spec_min_replicas"},
+	{MetricName: "kube_horizontalpodautoscaler_spec_target_metric"},
+	{MetricName: "kube_horizontalpodautoscaler_status_condition", CustomName: "kube_horizontalpodautoscaler_status_condition_active",
 		Labels: prometheus.QueryLabels{
 			Labels:   prometheus.Labels{"condition": "ScalingActive", "status": "true"},
 			Operator: prometheus.QueryOpAnd,
 		}},
-	{MetricName: "kube_hpa_status_condition", CustomName: "kube_hpa_status_condition_able",
+	{MetricName: "kube_horizontalpodautoscaler_status_condition", CustomName: "kube_horizontalpodautoscaler_status_condition_able",
 		Labels: prometheus.QueryLabels{
 			Labels:   prometheus.Labels{"condition": "AbleToScale", "status": "true"},
 			Operator: prometheus.QueryOpAnd,
 		}},
-	{MetricName: "kube_hpa_status_condition", CustomName: "kube_hpa_status_condition_limited",
+	{MetricName: "kube_horizontalpodautoscaler_status_condition", CustomName: "kube_horizontalpodautoscaler_status_condition_limited",
 		Labels: prometheus.QueryLabels{
 			Labels:   prometheus.Labels{"condition": "ScalingLimited", "status": "true"},
 			Operator: prometheus.QueryOpAnd,
 		}},
-	{MetricName: "kube_hpa_status_current_replicas"},
-	{MetricName: "kube_hpa_status_desired_replicas"},
+	{MetricName: "kube_horizontalpodautoscaler_status_current_replicas", CustomName: "kube_horizontalpodautoscaler_status_current_replicas"},
+	{MetricName: "kube_horizontalpodautoscaler_status_desired_replicas", CustomName: "kube_horizontalpodautoscaler_status_desired_replicas"},
 }
 
 // CadvisorQueries are the queries we will do to the kubelet metrics cadvisor endpoint in order to fetch all the raw metrics.

@@ -200,6 +200,8 @@ func GroupMetricsBySpec(specs definition.SpecGroups, families []MetricFamily) (g
 	for groupLabel := range specs {
 		for _, f := range families {
 			for _, m := range f.Metrics {
+				m.Labels = m.Labels.Rename("horizontalpodautoscaler", "hpa")
+
 				if !m.Labels.Has(groupLabel) {
 					continue
 				}
